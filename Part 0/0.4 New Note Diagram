@@ -1,0 +1,31 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note (Payload : {"content": "xyz", date:"01-01-23"})
+    activate server
+    Note right of server: The server then saves the note into the JSON file
+    server-->>browser: 302 Redirect to '/exampleapp/notes'
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->>browser: main.css
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server-->>browser: main.js
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{"content": "xyz", date:"01-01-23"}, ...]
+    deactivate server
+
+    Note right of browser: Browser will render the contents of the json
