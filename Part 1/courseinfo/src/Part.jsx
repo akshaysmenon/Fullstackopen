@@ -3,3 +3,5 @@ const Part = (props) => {
         <p>{props.partTitle} {props.numberOfExercises}</p>
     )
 }
+
+export default Part;
