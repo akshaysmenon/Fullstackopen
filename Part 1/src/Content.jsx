@@ -1,11 +1,13 @@
-import Part from './Part';
+import Part from "./Part";
 
 const Content = (props) => {
+  const parts = props.parts;
+  console.log(parts)
   return (
     <>
-      <Part partTitle={props.part1} numberOfExercises={props.exercise1} />
-      <Part partTitle={props.part2} numberOfExercises={props.exercise2} />
-      <Part partTitle={props.part3} numberOfExercises={props.exercise3} />
+      {parts.map((part) => 
+        <Part partTitle={part.name} numberOfExercises={part.exercises} />
+      )}
     </>
   );
 };
