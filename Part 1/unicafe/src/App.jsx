@@ -20,7 +20,7 @@ const App = () => {
     const total = good + neutral + bad;
     setTotal(total);
     setAverage((good - bad) / total);
-    setPositive(good / total);
+    setPositive((good / total) * 100);
   };
   const isStatsAvailable = () => good || neutral || bad;
   useEffect(() => {
