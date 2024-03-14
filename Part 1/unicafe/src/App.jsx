@@ -22,6 +22,7 @@ const App = () => {
     setAverage((good - bad) / total);
     setPositive(good / total);
   };
+  const isStatsAvailable = () => good || neutral || bad;
   useEffect(() => {
     calculateStats();
   }, [good, neutral, bad]);
@@ -33,10 +34,16 @@ const App = () => {
       <Button buttonText="Neutral" handleClick={handleNeutralClick} />
       <Button buttonText="Bad" handleClick={handleBadClick} />
       <Banner bannerText="Statistics" />
-      <span>Good : {good}</span> <br />
-      <span>Neutral : {neutral}</span> <br />
-      <span>Bad : {bad}</span>
-      <Statistics total={total} average={average} positive={positive} />
+      {isStatsAvailable() ? (
+        <Statistics
+          good={good}
+          neutral={neutral}
+          bad={bad}
+          total={total}
+          average={average}
+          positive={positive}
+        />
+      ) : <h4>No feedback given</h4>}
     </>
   );
 };

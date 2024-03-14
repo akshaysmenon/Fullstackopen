@@ -1,11 +1,16 @@
-const Statistics = ({ total, average, positive }) => {
+const Statistics = ({ good, neutral, bad, total, average, positive }) => {
   return (
     <>
-      <br/>  
+      <span>Good : {good}</span>
+      <br />
+      <span>Neutral : {neutral}</span>
+      <br />
+      <span>Bad : {bad}</span>
+      <br />
       <span>Total : {total}</span>
-      <br/>  
+      <br />
       <span>Average: {average}</span>
-      <br/>  
+      <br />
       <span>Positive: {positive}</span>
     </>
   );
