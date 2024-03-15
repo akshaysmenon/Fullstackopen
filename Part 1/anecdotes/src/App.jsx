@@ -2,14 +2,38 @@ import { useState } from "react";
 
 function App() {
   const anecdotesData = [
-    {id: 1, text: "If it hurts, do it more often.", votes: 0},
-    {id: 2, text: "Adding manpower to a late software project makes it later!", votes: 0},
-    {id: 3, text: "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.", votes: 0},
-    {id: 4, text: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.", votes: 0},
-    {id: 5, text: "Premature optimization is the root of all evil.", votes: 0},
-    {id: 6, text: "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.", votes: 0},
-    {id: 7, text: "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.", votes: 0},
-    {id: 8, text: "The only way to go fast, is to go well.", votes: 0},
+    { id: 1, text: "If it hurts, do it more often.", votes: 0 },
+    {
+      id: 2,
+      text: "Adding manpower to a late software project makes it later!",
+      votes: 0,
+    },
+    {
+      id: 3,
+      text: "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
+      votes: 0,
+    },
+    {
+      id: 4,
+      text: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+      votes: 0,
+    },
+    {
+      id: 5,
+      text: "Premature optimization is the root of all evil.",
+      votes: 0,
+    },
+    {
+      id: 6,
+      text: "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
+      votes: 0,
+    },
+    {
+      id: 7,
+      text: "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
+      votes: 0,
+    },
+    { id: 8, text: "The only way to go fast, is to go well.", votes: 0 },
   ];
 
   const getRandomAnecdoteIndex = () => {
@@ -23,6 +47,7 @@ function App() {
   const [selectedAnecdote, setSelectedAnecdote] = useState(
     anecdotes[randomIndex]
   );
+  const [highestVoted, setHighestVoted] = useState();
 
   const setNextAnecdote = () => {
     const randomIndex = getRandomAnecdoteIndex();
@@ -30,12 +55,24 @@ function App() {
   };
 
   const voteAnecdote = () => {
-    setAnecdotes(anecdotes.map(anecdote => {
-      if (anecdote.id === selectedAnecdote.id) {
-        anecdote.votes = anecdote.votes + 1;
-      }
-      return anecdote;
-    }));
+    setAnecdotes(
+      anecdotes.map((anecdote) => {
+        if (anecdote.id === selectedAnecdote.id) {
+          anecdote.votes = anecdote.votes + 1;
+        }
+        return anecdote;
+      })
+    );
+    setHighestVotedAnecdote();
+  };
+
+  const setHighestVotedAnecdote = () => {
+    const sortedAnecdotes = anecdotes.sort(sortAnecdotes);
+    setHighestVoted(sortedAnecdotes.shift());
+  };
+
+  const sortAnecdotes = (anecdote1, anecdote2) => {
+    return anecdote2.votes - anecdote1.votes;
   };
 
   return (
@@ -44,6 +81,15 @@ function App() {
       {!!selectedAnecdote && <h4>Has {selectedAnecdote.votes} votes </h4>}
       <button onClick={setNextAnecdote}>Next Anecdote</button>
       <button onClick={voteAnecdote}>Vote</button>
+      <h3>Anecdote with most votes</h3>
+      {highestVoted ? (
+        <>
+          <span> {highestVoted.text} </span> <br />
+          <span>has {highestVoted.votes} votes</span>
+        </>
+      ) : (
+        <span>No anecdotes were voted</span>
+      )}
     </>
   );
 }
