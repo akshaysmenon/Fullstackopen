@@ -1,11 +1,17 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import Person from "./components/Person";
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: "Arto Hellas", phone: "0894023323" },
+    { name: "Arto Hellas", phone: "040-123456", id: 1 },
+    { name: "Ada Lovelace", phone: "39-44-5323523", id: 2 },
+    { name: "Dan Abramov", phone: "12-43-234345", id: 3 },
+    { name: "Mary Poppendieck", phone: "39-23-6423122", id: 4 },
   ]);
   const [newPerson, setNewPerson] = useState({ name: "", phone: "" });
+  const [filter, setFilter] = useState("");
+  const [filteredResults, setFilteredResults] = useState(persons);
 
   const handleOnChange = (event) => {
     const name = event.target.name;
@@ -25,15 +31,49 @@ const App = () => {
     }
   };
 
+  const handleFilterOnChange = (event) => {
+    const filterBy = event.target.value;
+    setFilter(filterBy);
+    if (!filterBy) {
+      setFilteredResults(persons);
+      return;
+    }
+    const filtered = persons.filter((person) =>
+      person.name.toLowerCase().includes(filterBy.toLowerCase())
+    );
+    setFilteredResults([...filtered]);
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        filter shown with{" "}
+        <input
+          id="filter"
+          name="filter"
+          value={filter}
+          onChange={handleFilterOnChange}
+        />
+      </div>
       <form onSubmit={addToPhonebook}>
         <div>
-          name: <input id="name" name="name" onChange={handleOnChange} />
+          name:{" "}
+          <input
+            id="name"
+            name="name"
+            value={newPerson.name}
+            onChange={handleOnChange}
+          />
         </div>
         <div>
-          number: <input id="phone" name="phone" onChange={handleOnChange} />
+          number:{" "}
+          <input
+            id="phone"
+            name="phone"
+            value={newPerson.phone}
+            onChange={handleOnChange}
+          />
         </div>
         <div>
           <button type="submit">add</button>
@@ -41,7 +81,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <div>
-        {persons.map((person) => {
+        {filteredResults.map((person) => {
           return <Person name={person.name} phone={person.phone} />;
         })}
       </div>
