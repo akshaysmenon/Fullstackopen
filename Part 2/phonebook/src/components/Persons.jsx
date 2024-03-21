@@ -3,7 +3,7 @@ const Persons = ({ persons }) => {
   return (
     <div>
       {persons.map((person) => {
-        return <Person name={person.name} phone={person.phone} />;
+        return <Person key={person.id} name={person.name} phone={person.phone} />;
       })}
     </div>
   );
