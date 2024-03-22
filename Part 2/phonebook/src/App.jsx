@@ -3,6 +3,7 @@ import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import { create } from "./services/phonebook";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -29,7 +30,7 @@ const App = () => {
     setNewPerson({ ...newPerson, [name]: event.target.value });
   };
 
-  const addToPhonebook = (event) => {
+  const addToPhonebook = async (event) => {
     event.preventDefault();
     const isNamePresent = persons.find(
       (person) =>
@@ -38,7 +39,8 @@ const App = () => {
     if (isNamePresent) {
       alert(`${newPerson.name} is already added to the phonebook`);
     } else {
-      setPersons([...persons, newPerson]);
+      const response = await create(newPerson);
+      setPersons([...persons, response.data]);
     }
   };
 
