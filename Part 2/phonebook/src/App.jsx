@@ -3,7 +3,7 @@ import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import { create } from "./services/phonebook";
+import { createRecord, deleteRecord } from "./services/phonebook";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -27,7 +27,7 @@ const App = () => {
 
   useEffect(() => {
     filterPersons();
-  }, [persons, filter])
+  }, [persons, filter]);
 
   const handleOnChange = (event) => {
     const name = event.target.name;
@@ -43,7 +43,7 @@ const App = () => {
     if (isNamePresent) {
       alert(`${newPerson.name} is already added to the phonebook`);
     } else {
-      const response = await create(newPerson);
+      const response = await createRecord(newPerson);
       setPersons([...persons, response.data]);
     }
   };
@@ -61,7 +61,17 @@ const App = () => {
       person.name.toLowerCase().includes(filter.toLowerCase())
     );
     setFilteredResults([...filtered]);
-  }
+  };
+
+  const handleDeletePerson = async (id, name) => {
+    const confirmDeleteText = `Are you sure you want to delete ${name} from the phonebook?`;
+    if (confirm(confirmDeleteText)) {
+      const response = await deleteRecord(id);
+      setPersons(persons.filter((person) => person.id !== response.data.id));
+    } else {
+      //do nothing
+    }
+  };
 
   return (
     <div>
@@ -73,7 +83,7 @@ const App = () => {
         onInputChange={handleOnChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={filteredResults} />
+      <Persons persons={filteredResults} onDeletePerson={handleDeletePerson} />
     </div>
   );
 };
