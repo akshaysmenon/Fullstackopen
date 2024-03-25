@@ -3,6 +3,7 @@ import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 import { createRecord, deleteRecord } from "./services/phonebook";
 
 const App = () => {
@@ -10,6 +11,8 @@ const App = () => {
   const [newPerson, setNewPerson] = useState({ name: "", phone: "" });
   const [filter, setFilter] = useState("");
   const [filteredResults, setFilteredResults] = useState(persons);
+  const [notification, setNotification] = useState({});
+  const [showNotification, setShowNotification] = useState(false);
 
   const fetchAddressBook = async () => {
     try {
@@ -43,8 +46,19 @@ const App = () => {
     if (isNamePresent) {
       alert(`${newPerson.name} is already added to the phonebook`);
     } else {
-      const response = await createRecord(newPerson);
-      setPersons([...persons, response.data]);
+      try {
+        const response = await createRecord(newPerson);
+        setPersons([...persons, response.data]);
+        notify({
+          type: "success",
+          text: `Created ${newPerson.name} successfully`,
+        });
+      } catch (error) {
+        notify({
+          type: "error",
+          text: `Failed to create ${newPerson.name}`,
+        });
+      }
     }
   };
 
@@ -66,16 +80,39 @@ const App = () => {
   const handleDeletePerson = async (id, name) => {
     const confirmDeleteText = `Are you sure you want to delete ${name} from the phonebook?`;
     if (confirm(confirmDeleteText)) {
-      const response = await deleteRecord(id);
-      setPersons(persons.filter((person) => person.id !== response.data.id));
+      try {
+        const response = await deleteRecord(id);
+        setPersons(persons.filter((person) => person.id !== response.data.id));
+        notify({
+          type: "success",
+          text: `Deleted ${name} successfully`,
+        });
+      } catch (error) {
+        notify({
+          type: "error",
+          text: `Failed to delete ${name}`,
+        });
+      }
     } else {
       //do nothing
     }
   };
 
+  const notify = (notification) => {
+    setNotification(notification);
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 2000);
+    return;
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification
+        show={showNotification}
+        text={notification.text}
+        type={notification.type}
+      />
       <Filter filter={filter} onFilterChange={handleFilterOnChange} />
       <PersonForm
         person={newPerson}
