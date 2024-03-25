@@ -3,6 +3,7 @@ import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import { createRecord, deleteRecord } from "./services/phonebook";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -24,12 +25,16 @@ const App = () => {
     fetchAddressBook();
   }, []);
 
+  useEffect(() => {
+    filterPersons();
+  }, [persons, filter]);
+
   const handleOnChange = (event) => {
     const name = event.target.name;
     setNewPerson({ ...newPerson, [name]: event.target.value });
   };
 
-  const addToPhonebook = (event) => {
+  const addToPhonebook = async (event) => {
     event.preventDefault();
     const isNamePresent = persons.find(
       (person) =>
@@ -38,21 +43,34 @@ const App = () => {
     if (isNamePresent) {
       alert(`${newPerson.name} is already added to the phonebook`);
     } else {
-      setPersons([...persons, newPerson]);
+      const response = await createRecord(newPerson);
+      setPersons([...persons, response.data]);
     }
   };
 
   const handleFilterOnChange = (event) => {
-    const filterBy = event.target.value;
-    setFilter(filterBy);
-    if (!filterBy) {
-      setFilteredResults(persons);
+    setFilter(event.target.value);
+  };
+
+  const filterPersons = () => {
+    if (!filter) {
+      setFilteredResults([...persons]);
       return;
     }
     const filtered = persons.filter((person) =>
-      person.name.toLowerCase().includes(filterBy.toLowerCase())
+      person.name.toLowerCase().includes(filter.toLowerCase())
     );
     setFilteredResults([...filtered]);
+  };
+
+  const handleDeletePerson = async (id, name) => {
+    const confirmDeleteText = `Are you sure you want to delete ${name} from the phonebook?`;
+    if (confirm(confirmDeleteText)) {
+      const response = await deleteRecord(id);
+      setPersons(persons.filter((person) => person.id !== response.data.id));
+    } else {
+      //do nothing
+    }
   };
 
   return (
@@ -65,7 +83,7 @@ const App = () => {
         onInputChange={handleOnChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={filteredResults} />
+      <Persons persons={filteredResults} onDeletePerson={handleDeletePerson} />
     </div>
   );
 };
