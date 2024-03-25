@@ -25,6 +25,10 @@ const App = () => {
     fetchAddressBook();
   }, []);
 
+  useEffect(() => {
+    filterPersons();
+  }, [persons, filter])
+
   const handleOnChange = (event) => {
     const name = event.target.name;
     setNewPerson({ ...newPerson, [name]: event.target.value });
@@ -45,17 +49,19 @@ const App = () => {
   };
 
   const handleFilterOnChange = (event) => {
-    const filterBy = event.target.value;
-    setFilter(filterBy);
-    if (!filterBy) {
-      setFilteredResults(persons);
+    setFilter(event.target.value);
+  };
+
+  const filterPersons = () => {
+    if (!filter) {
+      setFilteredResults([...persons]);
       return;
     }
     const filtered = persons.filter((person) =>
-      person.name.toLowerCase().includes(filterBy.toLowerCase())
+      person.name.toLowerCase().includes(filter.toLowerCase())
     );
     setFilteredResults([...filtered]);
-  };
+  }
 
   return (
     <div>
