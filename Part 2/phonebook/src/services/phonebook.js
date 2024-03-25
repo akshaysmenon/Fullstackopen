@@ -7,7 +7,6 @@ const createRecord = async (data) => {
     const response = await axios.post(baseUrl, data);
     return response;
   } catch (error) {
-    alert("Failed to create", error);
     throw new Error();
   }
 };
@@ -17,7 +16,6 @@ const deleteRecord = async (id) => {
     const response = await axios.delete(`${baseUrl}/${id}`);
     return response;
   } catch (error) {
-    alert("Failed to delete", error);
     throw new Error();
   }
 };
